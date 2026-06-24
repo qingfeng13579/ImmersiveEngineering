@@ -1,4 +1,19 @@
-##### Version 1.21.1-12.4.2-pre
+##### Version 1.21.1-12.4.3-pre
+- Add tag "immersiveengineering:observer_material" to define valid items from the Resonanz Observer (BluSunrize)
+    - By default this tag simply contains paper, but modpack developers can extend it
+- Change concrete and hempcrete pillars to place like vanilla pillars (BluSunrize)
+    - Do the same for LV, MV and HV coil blocks
+- Fix secret achievement for the Drill triggering to easily (BluSunrize)
+- Fix rarity on shader items (BluSunrize)
+- Fix crashes when trying to craft a common shader bag into a lower tier (BluSunrize)
+- Fix transformers not distributing power correctly (voidsong-dragonfly)
+- Fix potential exploit with the coke oven (MelodicCougar7)
+- Fix resonanz observer consuming far less energy than it was supposed to (BluSunrize)
+- Fix resonanz observer consuming leftover progress when turned off (BluSunrize)
+- Fix remaining items in the assembler (BluSunrize)
+- Translations Added/Updated: zh_cn (JustAlkaid)
+
+##### Version 1.21.1-12.4.2-194
 - Add feature for the item router to filter by mod in addition to tags (BluSunrize)
 - Add "fluid" as an optional element in cloche recipes (BluSunrize)
     - Crimson and warped fungi are now grown with lava
@@ -20,6 +35,8 @@
 - Fix engineer illagers not dropping their raid banner (BluSunrize)
 - Fix shelves causing crashes when accessed from unexpected sides (BluSunrize)
 - Fix windows used in multiblocks being too directionally dependent (BluSunrize)
+- Fix backpack antenna not (visually) disconnecting from wires (BluSunrize)
+- Translations Added/Updated: zh_cn (qingfeng13579)
 
 ##### Version 1.21.1-12.4.1-193
 - Add variable lightlevel for lanterns and cage lamps (BluSunrize)

@@ -85,19 +85,21 @@ public class ChunkLoaderLogic
 		if(!(context.getLevel().getRawLevel() instanceof ServerLevel))
 			return;
 		final State state = context.getState();
+		final boolean wasActive = state.renderAsActive;
 		int energy_required = IEServerConfig.MACHINES.resonanz_observer_consumption.get();
 		if(state.rsState.isEnabled(context)&&state.energy.extractEnergy(energy_required, true)==energy_required)
 		{
+			// consume energy
+			state.energy.extractEnergy(energy_required, false);
+			// reduce timer
 			if(state.refreshTimer > 0)
 				state.refreshTimer--;
-
+			// reset timer if possible
 			if(state.refreshTimer <= 0)
 				if(!state.inventory.getStackInSlot(0).isEmpty())
 				{
 					// consume paper
 					state.inventory.getStackInSlot(0).shrink(1);
-					// consume energy
-					state.energy.extractEnergy(energy_required, false);
 					// set timer to the seconds configured in the config
 					state.refreshTimer = 20*IEServerConfig.MACHINES.resonanz_observer_paper_duration.get();
 					// mark chunks for loading
@@ -105,16 +107,16 @@ public class ChunkLoaderLogic
 				}
 				else
 					forceChunks(context, false);
+			state.renderAsActive = state.refreshTimer > 0;
 		}
-		else if(state.refreshTimer > 0)
+		else
 		{
-			state.refreshTimer = 0;
+			// pause chunkloading but don't reset timer
 			forceChunks(context, false);
+			state.renderAsActive = false;
 		}
 
 		// update client rendering
-		final boolean wasActive = state.renderAsActive;
-		state.renderAsActive = state.refreshTimer > 0;
 		if(wasActive!=state.renderAsActive)
 			context.requestMasterBESync();
 	}
@@ -185,7 +187,7 @@ public class ChunkLoaderLogic
 		public State(IInitialMultiblockContext<State> ctx)
 		{
 			this.inventory = SlotwiseItemHandler.makeWithGroups(
-					List.of(new IOConstraintGroup(new IOConstraint(true, i -> i.is(IETags.paper)), 1)),
+					List.of(new IOConstraintGroup(new IOConstraint(true, i -> i.is(IETags.observerMaterial)), 1)),
 					ctx.getMarkDirtyRunnable()
 			);
 			this.input = new WrappingItemHandler(inventory, true, false);
@@ -223,7 +225,7 @@ public class ChunkLoaderLogic
 		{
 			BlockPos masterPos = ctx.getLevel().toAbsolute(ChunkLoaderMultiblock.MASTER_OFFSET);
 			Level level = ctx.getLevel().getRawLevel();
-			Stream<ChunkPos> chunks =ChunkLoaderLogic.getChunks(masterPos);
+			Stream<ChunkPos> chunks = ChunkLoaderLogic.getChunks(masterPos);
 			return chunks
 					// find all block entities in the area
 					.flatMap(pos -> level.getChunk(pos.x, pos.z).getBlockEntities().values().stream())
